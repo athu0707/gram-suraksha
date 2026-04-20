@@ -38,7 +38,9 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 # Serve frontend static files
 frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "static")
 os.makedirs(frontend_path, exist_ok=True)
-app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+# Only mount if directory exists
+if os.path.exists(frontend_path):
+    app.mount("/static", StaticFiles(directory=frontend_path), name="static")
 # Register API routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(complaints.router, prefix="/api/complaints", tags=["Complaints"])
