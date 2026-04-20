@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Gram Suraksha – Village Issue Reporter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── CSS Variables ─── */
+:root {
+  --saffron: #FF6B00;
+  --saffron-light: #FF8C3A;
+  --green: #138808;
+  --green-light: #1aad0a;
+  --navy: #000080;
+  --white: #FFFFFF;
+  --bg: #F5F2ED;
+  --card: #FFFFFF;
+  --text: #1A1A2E;
+  --muted: #6B7280;
+  --border: #E5E0D8;
+  --danger: #DC2626;
+  --shadow: 0 2px 16px rgba(0,0,0,0.10);
+  --radius: 16px;
+  --font: 'Plus Jakarta Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ─── Top Bar ─── */
+.topbar {
+  background: linear-gradient(135deg, var(--saffron) 0%, #FF8C3A 50%, var(--green) 100%);
+  color: white;
+  padding: 16px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(255,107,0,0.3);
+}
+.topbar-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.topbar-subtitle { font-size: 11px; opacity: 0.9; }
+.topbar-right { display: flex; gap: 10px; align-items: center; }
+.notif-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.notif-badge {
+  position: absolute;
+  top: -2px; right: -2px;
+  background: var(--danger);
+  color: white;
+  font-size: 9px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  display: none;
+}
+.avatar-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── Bottom Navigation ─── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 10px;
+  transition: color 0.2s;
+  gap: 2px;
+}
+.nav-item.active { color: var(--saffron); }
+.nav-item .icon { font-size: 22px; }
+
+/* ─── Page Content ─── */
+.page { display: none; padding: 16px 16px 90px; }
+.page.active { display: block; }
+
+/* ─── Cards ─── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+/* ─── Auth Pages ─── */
+#auth-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0;
+}
+.auth-hero {
+  background: linear-gradient(160deg, var(--saffron) 0%, #e65c00 40%, var(--green) 100%);
+  padding: 48px 24px 40px;
+  color: white;
+  text-align: center;
+}
+.auth-hero .emblem { font-size: 48px; margin-bottom: 12px; }
+.auth-hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+.auth-hero p { font-size: 14px; opacity: 0.9; margin-top: 6px; }
+.auth-tabs {
+  display: flex;
+  background: #f0f0f0;
+  border-radius: 12px;
+  padding: 4px;
+  margin: 20px 20px 0;
+}
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.auth-tab.active {
+  background: white;
+  color: var(--saffron);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.auth-form-wrap { padding: 20px; flex: 1; }
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+
+/* ─── Form Inputs ─── */
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 14px;
+  background: #FAFAF9;
+  color: var(--text);
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-input:focus { border-color: var(--saffron); background: white; }
+.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+textarea.form-input { resize: none; }
+
+/* ─── Buttons ─── */
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--saffron), #e65c00);
+  color: white;
+  box-shadow: 0 4px 14px rgba(255,107,0,0.35);
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-success {
+  background: linear-gradient(135deg, var(--green), #0f7207);
+  color: white;
+  box-shadow: 0 4px 14px rgba(19,136,8,0.35);
+}
+.btn-outline {
+  background: white;
+  color: var(--saffron);
+  border: 2px solid var(--saffron);
+}
+.btn-sm {
+  width: auto;
+  padding: 8px 14px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+.btn-danger { background: var(--danger); color: white; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Home / Dashboard ─── */
+.greeting { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.greeting-sub { font-size: 14px; color: var(--muted); }
+
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.stat-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.stat-num { font-size: 28px; font-weight: 800; color: var(--saffron); }
+.stat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.points-card {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a237e 100%);
+  color: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.points-card::before {
+  content: '🏛️';
+  position: absolute;
+  right: 20px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 56px;
+  opacity: 0.15;
+}
+.points-label { font-size: 12px; opacity: 0.8; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.points-num { font-size: 42px; font-weight: 800; line-height: 1; margin: 4px 0; }
+.badge-pill {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ─── Complaint Cards ─── */
+.complaint-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.complaint-img { width: 100%; height: 160px; object-fit: cover; background: #f0ede8; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--muted); }
+.complaint-img img { width: 100%; height: 100%; object-fit: cover; }
+.complaint-body { padding: 14px; }
+.complaint-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+
+.badge-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-submitted { background: #FEF3C7; color: #92400E; }
+.status-in_progress { background: #DBEAFE; color: #1E40AF; }
+.status-resolved { background: #D1FAE5; color: #065F46; }
+
+.category-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #F3F0E8;
+  color: var(--muted);
+}
+.complaint-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.complaint-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.complaint-footer { display: flex; justify-content: space-between; margin-top: 10px; align-items: center; }
+.complaint-date { font-size: 11px; color: var(--muted); }
+.complaint-location { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 3px; }
+
+/* ─── Report Form ─── */
+.photo-upload {
+  width: 100%;
+  height: 180px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  background: #FAFAF9;
+  transition: border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.photo-upload:hover { border-color: var(--saffron); }
+.photo-upload.has-image { border-style: solid; }
+.photo-upload img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-upload-text { font-size: 13px; color: var(--muted); font-weight: 600; }
+.photo-upload-icon { font-size: 32px; }
+#file-input { display: none; }
+
+.location-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.location-row .form-input { flex: 1; }
+
+.voice-btn {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  margin-top: 0;
+}
+.voice-btn.recording { background: #FEE2E2; border-color: var(--danger); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+/* ─── Category Pills ─── */
+.category-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.cat-pill {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 4px;
+}
+.cat-pill.selected { background: var(--saffron); color: white; border-color: var(--saffron); }
+
+/* ─── Leaderboard ─── */
+.leader-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow);
+}
+.leader-rank { font-size: 18px; font-weight: 800; width: 28px; text-align: center; color: var(--muted); }
+.rank-1 { color: #F59E0B; }
+.rank-2 { color: #9CA3AF; }
+.rank-3 { color: #B45309; }
+.leader-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--saffron), var(--green));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: white; font-size: 16px; flex-shrink: 0;
+}
+.leader-info { flex: 1; }
+.leader-name { font-weight: 700; font-size: 14px; }
+.leader-badge { font-size: 11px; color: var(--muted); }
+.leader-points { font-weight: 800; color: var(--saffron); font-size: 16px; }
+
+/* ─── Admin Panel ─── */
+.admin-badge {
+  background: var(--navy);
+  color: white;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.admin-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.btn-valid { background: #D1FAE5; color: #065F46; border: none; }
+.btn-invalid { background: #FEE2E2; color: var(--danger); border: none; }
+.btn-progress { background: #DBEAFE; color: #1E40AF; border: none; }
+.btn-resolve { background: #D1FAE5; color: #065F46; border: none; }
+
+/* ─── Notifications ─── */
+.notif-item {
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  border-left: 4px solid;
+}
+.notif-success { background: #F0FDF4; border-color: var(--green); }
+.notif-warning { background: #FFFBEB; border-color: #F59E0B; }
+.notif-info { background: #EFF6FF; border-color: #3B82F6; }
+
+/* ─── Modal / Toast ─── */
+.toast {
+  position: fixed;
+  bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: #1A1A2E;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 320px;
+  width: calc(100% - 32px);
+  text-align: center;
+  z-index: 9999;
+  transition: opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error { background: var(--danger); }
+
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px;
+  color: var(--muted);
+  font-size: 14px;
+  gap: 8px;
+}
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--saffron);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; }
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: white;
+  border: 1.5px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.filter-pill.active { background: var(--saffron); color: white; border-color: var(--saffron); }
+
+/* Tricolor accent bar */
+.tricolor { height: 4px; background: linear-gradient(90deg, var(--saffron) 33%, white 33%, white 66%, var(--green) 66%); }
+</style>
+</head>
+<body>
+
+<!-- Auth Page -->
+<div id="auth-page">
+  <div class="auth-hero">
+    <div class="emblem">🏛️</div>
+    <h1>Gram Suraksha</h1>
+    <p>ग्राम सुरक्षा – Protecting Your Village</p>
+  </div>
+  <div class="tricolor"></div>
+
+  <div class="auth-tabs">
+    <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+    <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+    <button class="auth-tab" onclick="switchAuthTab('admin')">Admin</button>
+  </div>
+
+  <div class="auth-form-wrap">
+    <!-- Login Form -->
+    <div id="login-form" class="auth-form active">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="login-username" type="text" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="login-password" type="password" placeholder="Enter password">
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">🔑 Login</button>
+    </div>
+
+    <!-- Register Form -->
+    <div id="register-form" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" id="reg-name" type="text" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="reg-username" type="text" placeholder="Choose a username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="reg-email" type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone (optional)</label>
+        <input class="form-input" id="reg-phone" type="tel" placeholder="+91 XXXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="reg-password" type="password" placeholder="Create password">
+      </div>
+      <button class="btn btn-success" onclick="doRegister()">✅ Create Account</button>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div id="admin-form" class="auth-form">
+      <div style="background:#EFF6FF;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px;color:#1E40AF;">
+        👮 Admin portal. Use admin credentials to login.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Admin Username</label>
+        <input class="form-input" id="admin-username" type="text" placeholder="Admin username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="admin-password" type="password" placeholder="Admin password">
+      </div>
+      <button class="btn btn-primary" onclick="doAdminLogin()" style="background:linear-gradient(135deg,var(--navy),#1a237e)">👮 Admin Login</button>
+      <div style="margin-top:12px;text-align:center;">
+        <span style="font-size:12px;color:var(--muted)">New admin? </span>
+        <button onclick="showAdminRegister()" style="background:none;border:none;color:var(--navy);font-weight:700;font-size:12px;cursor:pointer">Register Admin Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main App (hidden until login) -->
+<div id="app" style="display:none">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">🏛️ Gram Suraksha</div>
+      <div class="topbar-subtitle" id="topbar-subtitle">ग्राम सुरक्षा</div>
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn" onclick="showPage('notifications')">
+        🔔
+        <span class="notif-badge" id="notif-badge">0</span>
+      </button>
+      <button class="avatar-btn" id="avatar-btn" onclick="showPage('profile')">U</button>
+    </div>
+  </div>
+
+  <!-- Pages -->
+  <div id="page-home" class="page active">
+    <div id="home-content">
+      <div class="loading"><div class="spinner"></div> Loading...</div>
+    </div>
+  </div>
+
+  <div id="page-report" class="page">
+    <div class="section-title">📝 Report an Issue</div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px">
+        <!-- Photo Upload -->
+        <div class="photo-upload" id="photo-upload-area" onclick="document.getElementById('file-input').click()">
+          <span class="photo-upload-icon">📷</span>
+          <span class="photo-upload-text">Tap to upload photo of issue</span>
+          <span style="font-size:11px;color:var(--muted)">JPG, PNG up to 10MB</span>
+        </div>
+        <input type="file" id="file-input" accept="image/*" onchange="handleImageSelect(event)">
+
+        <!-- Category Selection -->
+        <div class="form-group">
+          <div class="form-label">Category *</div>
+          <div class="category-pills" id="category-pills">
+            <div class="cat-pill" onclick="selectCategory(this,'road')">🛣️ Road</div>
+            <div class="cat-pill" onclick="selectCategory(this,'water')">💧 Water</div>
+            <div class="cat-pill" onclick="selectCategory(this,'electricity')">⚡ Electricity</div>
+            <div class="cat-pill" onclick="selectCategory(this,'sanitation')">🗑️ Sanitation</div>
+            <div class="cat-pill" onclick="selectCategory(this,'others')">📌 Others</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Issue Title *</label>
+          <input class="form-input" id="issue-title" type="text" placeholder="Brief title of the issue">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description * <button class="voice-btn" id="voice-btn" onclick="toggleVoice()" style="width:32px;height:32px;font-size:15px;margin-left:8px;vertical-align:middle">🎤</button></label>
+          <textarea class="form-input" id="issue-desc" rows="4" placeholder="Describe the problem in detail..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <div class="location-row">
+            <input class="form-input" id="location-name" placeholder="Location name / address">
+            <button class="voice-btn" onclick="getLocation()" title="Get GPS location" style="margin-top:0">📍</button>
+          </div>
+          <div id="gps-status" style="font-size:11px;color:var(--muted);margin-top:4px;"></div>
+        </div>
+
+        <button class="btn btn-primary" onclick="submitComplaint()">🚀 Submit Complaint</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-my-complaints" class="page">
+    <div class="section-title">📋 My Complaints</div>
+    <div class="filter-row" id="my-filter-row">
+      <div class="filter-pill active" onclick="filterMyComplaints(this,'all')">All</div>
+      <div class="filter-pill" onclick="filterMyComplaints(this,'submitted')">Submitted</div>
+      <div class="filter-pill" onclick="filterMyComplaints(this,'in_progress')">In Progress</div>
+      <div class="filter-pill" onclick="filterMyComplaints(this,'resolved')">Resolved</div>
+    </div>
+    <div id="my-complaints-list"><div class="loading"><div class="spinner"></div> Loading...</div></div>
+  </div>
+
+  <div id="page-leaderboard" class="page">
+    <div class="section-title">🏆 Leaderboard</div>
+    <div id="leaderboard-list"><div class="loading"><div class="spinner"></div> Loading...</div></div>
+  </div>
+
+  <div id="page-admin" class="page" style="display:none">
+    <div class="section-title">👮 Admin Panel <span class="admin-badge">ADMIN</span></div>
+    <!-- Stats -->
+    <div id="admin-stats-grid" class="stats-grid" style="grid-template-columns:repeat(3,1fr)"></div>
+    <!-- Filter -->
+    <div class="filter-row" id="admin-filter-row">
+      <div class="filter-pill active" onclick="filterAdminComplaints(this,'all')">All</div>
+      <div class="filter-pill" onclick="filterAdminComplaints(this,'submitted')">Submitted</div>
+      <div class="filter-pill" onclick="filterAdminComplaints(this,'in_progress')">In Progress</div>
+      <div class="filter-pill" onclick="filterAdminComplaints(this,'resolved')">Resolved</div>
+    </div>
+    <div id="admin-complaints-list"><div class="loading"><div class="spinner"></div> Loading...</div></div>
+  </div>
+
+  <div id="page-notifications" class="page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="section-title" style="margin:0">🔔 Notifications</div>
+      <button class="btn btn-sm btn-outline" onclick="clearNotifications()">Clear All</button>
+    </div>
+    <div id="notifications-list"><div class="loading"><div class="spinner"></div> Loading...</div></div>
+  </div>
+
+  <div id="page-profile" class="page">
+    <div class="section-title">👤 My Profile</div>
+    <div id="profile-content"></div>
+    <button class="btn btn-outline" onclick="logout()" style="margin-top:16px">🚪 Logout</button>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="showPage('home')">
+      <span class="icon">🏠</span>Home
+    </button>
+    <button class="nav-item" id="nav-report" onclick="showPage('report')">
+      <span class="icon">➕</span>Report
+    </button>
+    <button class="nav-item" id="nav-my-complaints" onclick="showPage('my-complaints')">
+      <span class="icon">📋</span>My Issues
+    </button>
+    <button class="nav-item" id="nav-leaderboard" onclick="showPage('leaderboard')">
+      <span class="icon">🏆</span>Leaders
+    </button>
+    <button class="nav-item" id="nav-admin" style="display:none" onclick="showPage('admin')">
+      <span class="icon">👮</span>Admin
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+const API = '';  // Same origin — FastAPI serves this HTML
+let token = localStorage.getItem('gs_token');
+let currentUser = JSON.parse(localStorage.getItem('gs_user') || 'null');
+let selectedCategory = '';
+let selectedImage = null;
+let lat = null, lon = null;
+let recognition = null;
+let isRecording = false;
+let allMyComplaints = [];
+let allAdminComplaints = [];
+
+// ─────────────────────────────────────────
+// API HELPERS
+// ─────────────────────────────────────────
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  // For FormData, don't set Content-Type (browser sets it with boundary)
+  if (options.body instanceof FormData) delete headers['Content-Type'];
+
+  const res = await fetch(API + path, { ...options, headers });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.detail || 'Request failed');
+  return data;
+}
+
+// ─────────────────────────────────────────
+// TOAST NOTIFICATIONS
+// ─────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = 'toast', 2800);
+}
+
+// ─────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', ['login','register','admin'][i] === tab));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  document.getElementById(tab + '-form').classList.add('active');
+}
+
+async function doLogin() {
+  try {
+    const data = await api('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username: document.getElementById('login-username').value, password: document.getElementById('login-password').value })
+    });
+    saveSession(data);
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function doRegister() {
+  try {
+    const data = await api('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        full_name: document.getElementById('reg-name').value,
+        username: document.getElementById('reg-username').value,
+        email: document.getElementById('reg-email').value,
+        phone: document.getElementById('reg-phone').value,
+        password: document.getElementById('reg-password').value
+      })
+    });
+    saveSession(data);
+    showToast('Welcome to Gram Suraksha! 🎉', 'success');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function doAdminLogin() {
+  try {
+    const data = await api('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username: document.getElementById('admin-username').value, password: document.getElementById('admin-password').value })
+    });
+    if (!data.user.is_admin) { showToast('This account is not an admin.', 'error'); return; }
+    saveSession(data);
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function showAdminRegister() {
+  const u = prompt('Admin username:');
+  const e = prompt('Admin email:');
+  const n = prompt('Full name:');
+  const p = prompt('Password:');
+  if (!u || !e || !n || !p) return;
+  api('/api/auth/register-admin', { method:'POST', body: JSON.stringify({username:u,email:e,full_name:n,password:p}) })
+    .then(() => showToast('Admin registered! Please login.', 'success'))
+    .catch(e => showToast(e.message, 'error'));
+}
+
+function saveSession(data) {
+  token = data.access_token;
+  currentUser = data.user;
+  localStorage.setItem('gs_token', token);
+  localStorage.setItem('gs_user', JSON.stringify(currentUser));
+  initApp();
+}
+
+function logout() {
+  token = null; currentUser = null;
+  localStorage.removeItem('gs_token');
+  localStorage.removeItem('gs_user');
+  document.getElementById('auth-page').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ─────────────────────────────────────────
+// APP INIT
+// ─────────────────────────────────────────
+function initApp() {
+  document.getElementById('auth-page').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Set avatar initial
+  document.getElementById('avatar-btn').textContent = currentUser.full_name[0].toUpperCase();
+  document.getElementById('topbar-subtitle').textContent = currentUser.full_name;
+
+  // Show admin nav if admin
+  if (currentUser.is_admin) {
+    document.getElementById('nav-admin').style.display = 'flex';
+    document.getElementById('nav-my-complaints').style.display = 'none';
+  }
+
+  showPage('home');
+  loadNotifications();
+}
+
+// ─────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) { pageEl.classList.add('active'); pageEl.style.display = 'block'; }
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+
+  // Load data for each page
+  if (page === 'home') loadHome();
+  if (page === 'my-complaints') loadMyComplaints();
+  if (page === 'leaderboard') loadLeaderboard();
+  if (page === 'admin') loadAdminPanel();
+  if (page === 'notifications') loadNotifications(true);
+  if (page === 'profile') loadProfile();
+}
+
+// ─────────────────────────────────────────
+// HOME PAGE
+// ─────────────────────────────────────────
+async function loadHome() {
+  try {
+    // Refresh user data to get latest points
+    const me = await api('/api/users/me');
+    currentUser = me;
+    localStorage.setItem('gs_user', JSON.stringify(me));
+
+    const myComplaints = await api('/api/complaints/my');
+    const total = myComplaints.length;
+    const resolved = myComplaints.filter(c => c.status === 'resolved').length;
+    const pending = myComplaints.filter(c => c.status !== 'resolved').length;
+
+    document.getElementById('home-content').innerHTML = `
+      <div style="padding-bottom:4px">
+        <div class="greeting">Jai Hind, ${currentUser.full_name.split(' ')[0]}! 🙏</div>
+        <div class="greeting-sub">Help build a better village</div>
+      </div>
+
+      <div class="points-card">
+        <div class="points-label">⭐ Your Points</div>
+        <div class="points-num">${currentUser.points}</div>
+        <div class="badge-pill">🏅 ${currentUser.badge}</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total Reports</div></div>
+        <div class="stat-card"><div class="stat-num">${resolved}</div><div class="stat-label">Resolved</div></div>
+        <div class="stat-card"><div class="stat-num">${pending}</div><div class="stat-label">Pending</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--green)">${currentUser.points}</div><div class="stat-label">Points Earned</div></div>
+      </div>
+
+      <div class="section-title">🔥 Recent Activity</div>
+      ${myComplaints.slice(0,3).map(c => renderComplaintCard(c, false)).join('') || '<div class="empty-state"><div class="icon">📭</div><p>No complaints yet. Tap Report to submit your first issue!</p></div>'}
+
+      <button class="btn btn-primary" onclick="showPage('report')" style="margin-top:8px">➕ Report a New Issue</button>
+    `;
+  } catch(e) {
+    document.getElementById('home-content').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+// ─────────────────────────────────────────
+// RENDER COMPLAINT CARD
+// ─────────────────────────────────────────
+function renderComplaintCard(c, isAdmin = false) {
+  const catIcons = { road:'🛣️', water:'💧', electricity:'⚡', sanitation:'🗑️', others:'📌' };
+  const imgHtml = c.image_path
+    ? `<div class="complaint-img"><img src="${c.image_path}" alt="Issue photo" loading="lazy" onerror="this.parentElement.innerHTML='${catIcons[c.category]||'📌'}'"></div>`
+    : `<div class="complaint-img" style="height:60px">${catIcons[c.category]||'📌'}</div>`;
+
+  const adminActions = isAdmin ? `
+    <div class="admin-actions">
+      <button class="btn btn-sm btn-valid" onclick="adminUpdate(${c.id},{is_valid:true})">✅ Valid</button>
+      <button class="btn btn-sm btn-invalid" onclick="adminUpdate(${c.id},{is_valid:false})">❌ Invalid</button>
+      <button class="btn btn-sm btn-progress" onclick="adminUpdate(${c.id},{status:'in_progress'})">🔧 In Progress</button>
+      <button class="btn btn-sm btn-resolve" onclick="adminUpdate(${c.id},{status:'resolved'})">🎉 Resolve</button>
+    </div>
+    ${c.user ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">👤 ${c.user.full_name} (@${c.user.username})</div>` : ''}
+  ` : '';
+
+  const validBadge = c.is_valid === true ? '✅ Valid' : c.is_valid === false ? '❌ Invalid' : '⏳ Pending Review';
+
+  return `
+    <div class="complaint-card">
+      ${imgHtml}
+      <div class="complaint-body">
+        <div class="complaint-meta">
+          <span class="badge-status status-${c.status}">${c.status.replace('_',' ')}</span>
+          <span class="category-badge">${catIcons[c.category]||'📌'} ${c.category}</span>
+          ${isAdmin ? `<span style="font-size:11px;padding:3px 8px;border-radius:12px;background:#f3f0e8">${validBadge}</span>` : ''}
+        </div>
+        <div class="complaint-title">${c.title}</div>
+        <div class="complaint-desc">${c.description.substring(0,100)}${c.description.length>100?'...':''}</div>
+        <div class="complaint-footer">
+          <span class="complaint-date">📅 ${new Date(c.created_at).toLocaleDateString('en-IN')}</span>
+          ${c.location_name ? `<span class="complaint-location">📍 ${c.location_name}</span>` : ''}
+        </div>
+        ${c.admin_notes ? `<div style="margin-top:8px;padding:8px;background:#f5f2ed;border-radius:8px;font-size:12px;color:var(--muted)">💬 Admin: ${c.admin_notes}</div>` : ''}
+        ${adminActions}
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────
+// MY COMPLAINTS
+// ─────────────────────────────────────────
+async function loadMyComplaints() {
+  try {
+    allMyComplaints = await api('/api/complaints/my');
+    renderMyComplaints('all');
+  } catch(e) {
+    document.getElementById('my-complaints-list').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+function renderMyComplaints(filter) {
+  const list = filter === 'all' ? allMyComplaints : allMyComplaints.filter(c => c.status === filter);
+  const el = document.getElementById('my-complaints-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No complaints found.</p></div>';
+    return;
+  }
+  el.innerHTML = list.map(c => renderComplaintCard(c, false)).join('');
+}
+
+function filterMyComplaints(el, filter) {
+  document.querySelectorAll('#my-filter-row .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderMyComplaints(filter);
+}
+
+// ─────────────────────────────────────────
+// REPORT FORM
+// ─────────────────────────────────────────
+function selectCategory(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCategory = cat;
+}
+
+function handleImageSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  selectedImage = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const area = document.getElementById('photo-upload-area');
+    area.innerHTML = `<img src="${e.target.result}" alt="Selected">`;
+    area.classList.add('has-image');
+  };
+  reader.readAsDataURL(file);
+}
+
+function getLocation() {
+  const status = document.getElementById('gps-status');
+  status.textContent = '📡 Getting GPS location...';
+  if (!navigator.geolocation) { status.textContent = 'GPS not supported on this device.'; return; }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      lat = pos.coords.latitude;
+      lon = pos.coords.longitude;
+      status.textContent = `✅ Got location: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+      if (!document.getElementById('location-name').value) {
+        document.getElementById('location-name').value = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+      }
+    },
+    (err) => { status.textContent = '❌ Could not get location. Enter manually.'; }
+  );
+}
+
+function toggleVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) { showToast('Voice input not supported in this browser.', 'error'); return; }
+
+  if (isRecording) {
+    recognition.stop();
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'hi-IN';
+  recognition.continuous = false;
+
+  const btn = document.getElementById('voice-btn');
+  btn.classList.add('recording');
+  btn.textContent = '⏹️';
+  isRecording = true;
+
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('issue-desc').value += (document.getElementById('issue-desc').value ? ' ' : '') + transcript;
+    showToast('Voice captured! 🎤', 'success');
+  };
+  recognition.onend = () => {
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    isRecording = false;
+  };
+  recognition.onerror = () => {
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    isRecording = false;
+    showToast('Voice capture failed. Try again.', 'error');
+  };
+  recognition.start();
+}
+
+async function submitComplaint() {
+  const title = document.getElementById('issue-title').value.trim();
+  const desc = document.getElementById('issue-desc').value.trim();
+  const locName = document.getElementById('location-name').value.trim();
+
+  if (!title) { showToast('Please enter a title for the issue.', 'error'); return; }
+  if (!desc) { showToast('Please describe the problem.', 'error'); return; }
+  if (!selectedCategory) { showToast('Please select a category.', 'error'); return; }
+
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('description', desc);
+  formData.append('category', selectedCategory);
+  if (lat) formData.append('latitude', lat);
+  if (lon) formData.append('longitude', lon);
+  if (locName) formData.append('location_name', locName);
+  if (selectedImage) formData.append('image', selectedImage);
+
+  try {
+    await api('/api/complaints/', { method: 'POST', body: formData });
+    showToast('Complaint submitted successfully! 🎉', 'success');
+
+    // Reset form
+    document.getElementById('issue-title').value = '';
+    document.getElementById('issue-desc').value = '';
+    document.getElementById('location-name').value = '';
+    document.getElementById('gps-status').textContent = '';
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('selected'));
+    document.getElementById('photo-upload-area').innerHTML = `<span class="photo-upload-icon">📷</span><span class="photo-upload-text">Tap to upload photo of issue</span><span style="font-size:11px;color:var(--muted)">JPG, PNG up to 10MB</span>`;
+    selectedCategory = ''; selectedImage = null; lat = null; lon = null;
+
+    setTimeout(() => showPage('my-complaints'), 500);
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+// ─────────────────────────────────────────
+// LEADERBOARD
+// ─────────────────────────────────────────
+async function loadLeaderboard() {
+  try {
+    const leaders = await api('/api/users/leaderboard?limit=15');
+    const el = document.getElementById('leaderboard-list');
+    if (!leaders.length) { el.innerHTML = '<div class="empty-state"><div class="icon">🏆</div><p>No data yet. Be the first!</p></div>'; return; }
+
+    el.innerHTML = leaders.map(l => `
+      <div class="leader-item">
+        <div class="leader-rank ${l.rank <= 3 ? 'rank-'+l.rank : ''}">${l.rank <= 3 ? ['🥇','🥈','🥉'][l.rank-1] : l.rank}</div>
+        <div class="leader-avatar">${l.full_name[0]}</div>
+        <div class="leader-info">
+          <div class="leader-name">${l.full_name}</div>
+          <div class="leader-badge">🏅 ${l.badge} · ${l.complaint_count} valid reports</div>
+        </div>
+        <div class="leader-points">${l.points}pts</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('leaderboard-list').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+// ─────────────────────────────────────────
+// NOTIFICATIONS
+// ─────────────────────────────────────────
+async function loadNotifications(render = false) {
+  try {
+    const data = await api('/api/users/notifications');
+    const badge = document.getElementById('notif-badge');
+    if (data.unread_count > 0) {
+      badge.style.display = 'flex';
+      badge.textContent = data.unread_count;
+    } else {
+      badge.style.display = 'none';
+    }
+    if (render) {
+      const el = document.getElementById('notifications-list');
+      if (!data.notifications.length) {
+        el.innerHTML = '<div class="empty-state"><div class="icon">🔔</div><p>No notifications yet.</p></div>';
+        return;
+      }
+      el.innerHTML = data.notifications.map(n => `
+        <div class="notif-item notif-${n.type || 'info'}">${n.message}<div style="font-size:10px;opacity:0.6;margin-top:4px">${new Date(n.created_at).toLocaleString('en-IN')}</div></div>
+      `).join('');
+    }
+  } catch(e) {}
+}
+
+async function clearNotifications() {
+  try {
+    await api('/api/users/notifications', { method: 'DELETE' });
+    document.getElementById('notifications-list').innerHTML = '<div class="empty-state"><div class="icon">🔔</div><p>No notifications yet.</p></div>';
+    document.getElementById('notif-badge').style.display = 'none';
+    showToast('Notifications cleared!');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+// ─────────────────────────────────────────
+// PROFILE
+// ─────────────────────────────────────────
+function loadProfile() {
+  const u = currentUser;
+  document.getElementById('profile-content').innerHTML = `
+    <div class="card" style="text-align:center;padding:24px">
+      <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--saffron),var(--green));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:white;margin:0 auto 12px">${u.full_name[0]}</div>
+      <div style="font-size:20px;font-weight:800">${u.full_name}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">@${u.username}</div>
+      <div style="margin-top:12px"><span class="badge-pill" style="background:linear-gradient(135deg,var(--saffron),var(--green));color:white">🏅 ${u.badge}</span></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">${u.points}</div><div class="stat-label">Total Points</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:${u.is_blocked?'var(--danger)':'var(--green)'}">${u.is_blocked?'Blocked':'Active'}</div><div class="stat-label">Status</div></div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600">ACCOUNT DETAILS</div>
+      <div style="font-size:14px;margin-bottom:6px">📧 ${u.email}</div>
+      ${u.phone ? `<div style="font-size:14px;margin-bottom:6px">📞 ${u.phone}</div>` : ''}
+      <div style="font-size:14px">📅 Joined: ${new Date(u.created_at).toLocaleDateString('en-IN')}</div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">🏆 Badge Journey</div>
+      ${[['Beginner','0 pts',0],['Active Citizen','30 pts',30],['Top Reporter','100 pts',100],['Village Guardian','200 pts',200]].map(([name,req,min]) => `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:16px">${u.points >= min ? '✅' : '⭕'}</span>
+          <span style="font-size:13px;font-weight:${name===u.badge?'700':'400'};color:${name===u.badge?'var(--saffron)':'inherit'}">${name}</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:auto">${req}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ─────────────────────────────────────────
+// ADMIN PANEL
+// ─────────────────────────────────────────
+async function loadAdminPanel() {
+  if (!currentUser.is_admin) return;
+  try {
+    // Load stats
+    const stats = await api('/api/admin/stats');
+    document.getElementById('admin-stats-grid').innerHTML = [
+      [stats.total_complaints,'Total'],
+      [stats.submitted,'Submitted'],
+      [stats.in_progress,'In Progress'],
+      [stats.resolved,'Resolved'],
+      [stats.total_users,'Users'],
+      [stats.blocked_users,'Blocked'],
+    ].map(([n,l]) => `<div class="stat-card"><div class="stat-num" style="font-size:22px">${n}</div><div class="stat-label">${l}</div></div>`).join('');
+
+    // Load all complaints
+    allAdminComplaints = await api('/api/admin/complaints?limit=100');
+    renderAdminComplaints('all');
+  } catch(e) {
+    document.getElementById('admin-complaints-list').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+function renderAdminComplaints(filter) {
+  const list = filter === 'all' ? allAdminComplaints : allAdminComplaints.filter(c => c.status === filter);
+  const el = document.getElementById('admin-complaints-list');
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No complaints found.</p></div>'; return; }
+  el.innerHTML = list.map(c => renderComplaintCard(c, true)).join('');
+}
+
+function filterAdminComplaints(el, filter) {
+  document.querySelectorAll('#admin-filter-row .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderAdminComplaints(filter);
+}
+
+async function adminUpdate(id, updates) {
+  try {
+    await api(`/api/admin/complaints/${id}`, { method: 'PATCH', body: JSON.stringify(updates) });
+    showToast('Complaint updated! ✅', 'success');
+    loadAdminPanel();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+// ─────────────────────────────────────────
+// STARTUP
+// ─────────────────────────────────────────
+if (token && currentUser) {
+  initApp();
+}
+</script>
+</body>
+</html>
